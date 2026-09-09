@@ -1,25 +1,61 @@
-:root {
-  --bg: #f1f5f9;
-  --surface: #ffffff;
-  --ink: #0f172a;
-  --muted: #475569;
-  --border: #cbd5e1;
-  --accent: #1d4ed8;
-  --accent-ink: #1e40af;
-  --work: #b91c1c;
-  --work-tint: #fee2e2;
-  --short: #166534;
-  --short-tint: #dcfce7;
-  --long: #155e75;
-  --long-tint: #cffafe;
-  --paused-amber: #92400e;
-  --paused-tint: #fef3c7;
-  --error: #b91c1c;
-  --focus: #1d4ed8;
-  --progress-track: #e2e8f0;
+/* SOBA-15 visual redesign — premium calm lo-fi. Visual/UI/UX polish ONLY.
+   No timer-logic changes; all selectors map to the existing DOM. */
 
-  --sans: -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial,
-    sans-serif;
+:root {
+  --bg: #f2ede3;
+  --bg-deep: #e7dfcf;
+  --surface: #faf7f0;
+  --surface-2: #f4eee1;
+  --ink: #2c2620;
+  --muted: #786d5e;
+  --faint: #a79b89;
+  --border: #dfd5c2;
+  --border-soft: #eae2d1;
+  --focus-ring: #8a6d3b;
+  --focus: #9C563C;
+  --focus-ink: #74402c;
+  --focus-tint: #f0dcd0;
+  --short: #546F5B;
+  --short-ink: #47604d;
+  --short-tint: #dce7da;
+  --long: #4E7180;
+  --long-ink: #3e5a68;
+  --long-tint: #d8e3e9;
+  --paused: #7A5A24;
+  --paused-tint: #f1e4c4;
+  --success: #5f7f67;
+  --error: #a34a3c;
+  --error-tint: #f2d9d2;
+  --progress-track: #e4dac6;
+  --on-accent: #faf7f0;
+
+  /* radii */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-pill: 999px;
+  /* shadows (warm-tinted, soft) */
+  --shadow-sm: 0 1px 2px rgb(44 38 32 / 0.06);
+  --shadow-card:
+    0 12px 32px -12px rgb(44 38 32 / 0.18),
+    0 2px 6px rgb(44 38 32 / 0.06);
+  --shadow-btn:
+    0 6px 16px -8px rgb(44 38 32 / 0.35),
+    inset 0 1px 0 rgb(255 255 255 / 0.25);
+  /* spacing (4pt base) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+
+  --serif: "Fraunces", georgia, "Times New Roman", serif;
+  --sans: "Inter", -apple-system, blinkmacsystemfont, "Segoe UI", roboto,
+    "Helvetica Neue", arial, sans-serif;
 
   color-scheme: light;
 }
@@ -33,16 +69,56 @@
 body {
   margin: 0;
   font-family: var(--sans);
-  background: var(--bg);
+  background: radial-gradient(
+    1200px 800px at 20% -10%,
+    #f7f1e4 0%,
+    var(--bg) 45%,
+    var(--bg-deep) 100%
+  );
+  box-shadow: inset 0 0 180px rgb(44 38 32 / 0.06);
   color: var(--ink);
   line-height: 1.5;
 }
 
 .page {
+  position: relative;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   padding: 0 16px 24px;
+}
+
+/* Ambient lo-fi blobs (decorative only: no pointer events, behind content). */
+.page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      480px 480px at 12% 8%,
+      rgb(169 98 72 / 0.16),
+      transparent 70%
+    ),
+    radial-gradient(
+      520px 520px at 88% 92%,
+      rgb(95 127 103 / 0.14),
+      transparent 70%
+    );
+  filter: blur(80px);
+}
+
+/* Film grain (decorative only). */
+.page::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
 }
 
 .site-header {
@@ -58,11 +134,18 @@ body {
 }
 
 .wordmark {
-  font-weight: 700;
-  font-size: 17px;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 1.3;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Header pill is a duplicate of the card pill: hidden on mobile, compact on ≥768px. */
+.site-header .phase-pill {
+  display: none;
 }
 
 .layout {
@@ -78,20 +161,40 @@ body {
 
 .timer-card,
 .settings-panel {
-  background: var(--surface);
-  border-radius: 16px;
-  padding: 20px 16px;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .timer-card {
-  box-shadow: 0 1px 3px rgb(15 23 42 / 0.1);
-  border-radius: 16px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-xl);
+  padding: 24px 20px 20px;
   min-width: 0;
+  transition:
+    border-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Phase-scoped card edge tint (presentation-only, driven by data-phase). */
+.timer-card[data-phase="work"] {
+  border-color: color-mix(in srgb, var(--focus) 28%, var(--border-soft));
+}
+
+.timer-card[data-phase="short-break"] {
+  border-color: color-mix(in srgb, var(--short) 30%, var(--border-soft));
+}
+
+.timer-card[data-phase="long-break"] {
+  border-color: color-mix(in srgb, var(--long) 30%, var(--border-soft));
 }
 
 .settings-panel {
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 20px 16px;
 }
 
 .timer-top {
@@ -106,75 +209,108 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border-radius: 999px;
-  padding: 4px 14px;
+  border-radius: var(--r-pill);
+  padding: 6px 14px;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
+  letter-spacing: 0.04em;
   min-width: 11ch;
   white-space: nowrap;
+  transition:
+    background-color 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 400ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .phase-pill .dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-pill);
   background: currentcolor;
   flex: none;
 }
 
 .phase-work {
-  color: var(--work);
-  background: var(--work-tint);
+  color: var(--focus-ink);
+  background: var(--focus-tint);
 }
 
 .phase-short-break {
-  color: var(--short);
+  color: var(--short-ink);
   background: var(--short-tint);
 }
 
 .phase-long-break {
-  color: var(--long);
+  color: var(--long-ink);
   background: var(--long-tint);
-}
-
-.site-header .phase-pill {
-  font-size: 13px;
-  padding: 2px 10px;
-  min-width: 0;
 }
 
 .cycle-line {
   color: var(--muted);
   font-size: 14px;
+  font-weight: 500;
 }
 
 .countdown {
-  font-size: 52px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: clamp(48px, 12vw, 72px);
+  letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
   min-height: 1.2em;
   text-align: center;
-  margin: 8px 0;
-  line-height: 1.2;
+  margin: 12px 0 8px;
+  line-height: 1.05;
+  transition: opacity 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* One soft pulse when the phase changes: the data-phase switch restarts it. */
+.timer-card[data-phase="work"] .countdown {
+  animation: phase-pulse 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.timer-card[data-phase="short-break"] .countdown {
+  animation: phase-pulse 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.timer-card[data-phase="long-break"] .countdown {
+  animation: phase-pulse 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes phase-pulse {
+  0% {
+    opacity: 0.6;
+    transform: translateY(2px) scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(0) scale(1.015);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .progress-track {
-  height: 8px;
-  border-radius: 999px;
+  height: 10px;
+  border-radius: var(--r-pill);
   background: var(--progress-track);
+  box-shadow: inset 0 1px 2px rgb(44 38 32 / 0.08);
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  border-radius: 999px;
-  background: var(--accent);
+  border-radius: var(--r-pill);
+  background: var(--focus);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25);
   transition: width 0.25s linear;
 }
 
 .phase-bg-work {
-  background: var(--work);
+  background: var(--focus);
 }
 
 .phase-bg-short-break {
@@ -187,16 +323,17 @@ body {
 
 .dots {
   display: flex;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 10px;
   justify-content: center;
-  margin: 12px 0 4px;
+  margin: 14px 0 4px;
 }
 
 .cycle-dot {
   width: 12px;
   height: 12px;
-  border-radius: 999px;
-  border: 2px solid var(--border);
+  border-radius: var(--r-pill);
+  border: 2px solid var(--faint);
   background: transparent;
 }
 
@@ -207,15 +344,17 @@ body {
 
 .counter-line {
   text-align: center;
-  margin: 4px 0 0;
-  font-size: 15px;
+  margin: 8px 0 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--muted);
 }
 
 .controls {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
-  margin-top: 16px;
+  margin-top: 20px;
 }
 
 .controls .btn-primary {
@@ -225,27 +364,48 @@ body {
 .btn {
   min-height: 48px;
   min-width: 96px;
-  border-radius: 10px;
+  border-radius: 14px;
   font-size: 16px;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
   padding: 10px 16px;
+  transition:
+    transform 120ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 120ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.btn:active {
+.btn:hover:not(:disabled) {
+  filter: brightness(0.96);
+  transform: translateY(-1px);
+}
+
+.btn:active:not(:disabled) {
   transform: scale(0.98);
 }
 
 .btn:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: #fff;
-  border: 1px solid var(--accent);
+  min-height: 52px;
+  background: var(--focus);
+  color: var(--on-accent);
+  border: 1px solid rgb(44 38 32 / 0.18);
+  box-shadow: var(--shadow-btn);
+}
+
+/* Primary button follows the phase accent (presentation-only). */
+.timer-card[data-phase="short-break"] .btn-primary {
+  background: var(--short);
+}
+
+.timer-card[data-phase="long-break"] .btn-primary {
+  background: var(--long);
 }
 
 .btn-secondary {
@@ -255,7 +415,7 @@ body {
 }
 
 .btn-danger {
-  background: var(--surface);
+  background: transparent;
   color: var(--error);
   border: 1px solid var(--border);
   width: 100%;
@@ -265,14 +425,15 @@ body {
 .btn-ghost {
   background: transparent;
   border: 1px solid var(--border);
-  color: var(--accent-ink);
+  color: var(--focus-ink);
   min-height: 44px;
   min-width: 0;
   font-size: 14px;
+  padding: 8px 14px;
 }
 
 :focus-visible {
-  outline: 3px solid var(--focus);
+  outline: 3px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -283,27 +444,41 @@ body {
 }
 
 .hint {
+  font-size: 12.5px;
   margin: 12px 0 0;
 }
 
 .status-line {
-  margin: 8px 0 0;
+  margin: 10px 0 0;
   font-size: 14px;
-  background: var(--paused-tint);
-  color: var(--paused-amber);
-  border-radius: 8px;
+  background: var(--surface-2);
+  color: var(--ink);
+  border-radius: var(--r-sm);
   padding: 8px 12px;
   max-width: 60ch;
 }
 
+/* Optional status variants: activate with data-status={status} (1-line future
+   tweak, no logic change). Until then the neutral base above applies. */
+.status-line[data-status="paused"] {
+  background: var(--paused-tint);
+  color: var(--paused);
+}
+
+.status-line[data-status="idle"] {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
 .settings-panel h2 {
   margin: 0 0 12px;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .field {
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .field > label {
@@ -323,29 +498,54 @@ body {
   width: 100%;
   min-height: 48px;
   font-size: 16px;
+  font-weight: 500;
   font-family: inherit;
   color: var(--ink);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 8px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
   background: var(--surface);
+  transition:
+    border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.field-row input[type="number"]:focus {
+  border-color: var(--focus-ring);
+  outline: 3px solid color-mix(in srgb, var(--focus-ring) 30%, transparent);
+  outline-offset: 1px;
 }
 
 .field-row input[aria-invalid="true"] {
   border-color: var(--error);
+  background: color-mix(in srgb, var(--error-tint) 35%, var(--surface));
 }
 
 .unit {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 13px;
   flex: none;
-  min-width: 4ch;
+  min-width: 7ch;
+  text-align: right;
 }
 
 .field-error {
   color: var(--error);
   font-size: 13px;
   margin: 4px 0 0;
+  animation: field-error-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes field-error-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .field-check {
@@ -362,8 +562,13 @@ body {
 .field-check input[type="checkbox"] {
   width: 22px;
   height: 22px;
-  accent-color: var(--accent);
+  accent-color: var(--focus);
   flex: none;
+}
+
+.field-check input[type="checkbox"]:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 1px;
 }
 
 .helper {
@@ -371,7 +576,8 @@ body {
 }
 
 .helper-note {
-  color: var(--accent-ink);
+  color: var(--focus-ink);
+  font-weight: 500;
 }
 
 .site-footer {
@@ -386,16 +592,19 @@ body {
     padding: 0 20px 28px;
   }
 
+  .site-header .phase-pill {
+    display: inline-flex;
+    font-size: 12.5px;
+    padding: 4px 10px;
+    min-width: 0;
+  }
+
   .timer-card {
-    padding: 24px;
+    padding: 28px;
   }
 
   .settings-panel {
     padding: 24px;
-  }
-
-  .countdown {
-    font-size: 56px;
   }
 
   .controls {
@@ -419,32 +628,45 @@ body {
     padding: 0 24px 32px;
   }
 
+  .site-header {
+    max-width: 980px;
+    min-height: 64px;
+  }
+
   .layout {
-    max-width: 960px;
-    grid-template-columns: minmax(320px, 1.35fr) minmax(300px, 1fr);
+    max-width: 980px;
+    grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr);
     gap: 24px;
     align-items: start;
   }
 
   .timer-card {
-    padding: 32px;
+    padding: 36px 36px 28px;
+  }
+
+  .settings-panel {
+    position: sticky;
+    top: 20px;
   }
 
   .countdown {
-    font-size: 64px;
+    font-size: 72px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+  }
+
   .progress-fill {
     transition: none;
   }
 
   .btn:active {
     transform: none;
-  }
-
-  * {
-    animation: none !important;
   }
 }

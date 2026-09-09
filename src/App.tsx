@@ -89,7 +89,7 @@ export default function App() {
       </header>
 
       <main className="layout">
-        <section className="timer-card" aria-label="Timer">
+        <section className="timer-card" data-phase={phase} aria-label="Timer">
           <div className="timer-top">
             <span className={`phase-pill phase-${phase}`}>
               <span className="dot" />
@@ -153,7 +153,7 @@ export default function App() {
             Shortcuts: Space = Start/Pause/Resume · R = Reset phase · S = Skip. Ignored
             while typing in settings.
           </p>
-          <p className="status-line" role="status" aria-live="polite">
+          <p className="status-line" data-status={status} role="status" aria-live="polite">
             {status === 'running' ? 'Running' : status === 'paused' ? 'Paused' : 'Idle'} —{' '}
             {announcement}
           </p>
