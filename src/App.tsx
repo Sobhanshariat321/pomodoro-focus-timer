@@ -193,12 +193,48 @@ export default function App() {
 
   return (
     <div className="stage" data-phase={phase}>
-      {/* L0 — photographic cinematic environment (local asset) */}
+      {/* L0 — hidden photographic layer (clean fix: no baked UI) */}
       <div className="env env-photo" aria-hidden="true" />
-      {/* L0b — fallback gradient behind photo */}
+      {/* L0b — illustrated cinematic base (gradient + cool/warm glows) */}
       <div className="env env-l0" aria-hidden="true" />
 
-      {/* L2 — grain + drifting dust motes (above photo, below overlays) */}
+      {/* L1 — architecture suggestion (inline SVG, heavily blurred) — clean, no baked UI */}
+      <svg
+        className="env env-l1"
+        aria-hidden="true"
+        focusable="false"
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="xMidYMid slice"
+      >
+        <defs>
+          <linearGradient id="shelf" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#2b1e10" stopOpacity="0.9" />
+            <stop offset="1" stopColor="#120d08" stopOpacity="0.9" />
+          </linearGradient>
+          <radialGradient id="windowGlow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stopColor="#e8b26a" stopOpacity="0.55" />
+            <stop offset="1" stopColor="#e8b26a" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="fireGlow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0" stopColor="#d6783c" stopOpacity="0.6" />
+            <stop offset="1" stopColor="#d6783c" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <g className="arch-shelves">
+          <rect x="0" y="120" width="150" height="780" fill="url(#shelf)" />
+          <rect x="1290" y="120" width="150" height="780" fill="url(#shelf)" />
+          {Array.from({ length: 9 }, (_, i) => (
+            <g key={`l-${i}`}>
+              <rect x="18" y={170 + i * 78} width="114" height="10" fill="#0b0704" opacity="0.8" />
+              <rect x="1308" y={170 + i * 78} width="114" height="10" fill="#0b0704" opacity="0.8" />
+            </g>
+          ))}
+        </g>
+        <ellipse cx="720" cy="150" rx="180" ry="220" fill="url(#windowGlow)" className="arch-breathe" />
+        <ellipse cx="1180" cy="760" rx="220" ry="150" fill="url(#fireGlow)" className="arch-breathe arch-breathe-late" />
+      </svg>
+
+      {/* L2 — grain + drifting dust motes (above environment, below overlays) */}
       <div className="env env-l2" aria-hidden="true">
         <svg className="grain" focusable="false" aria-hidden="true">
           <filter id="grainFilter">

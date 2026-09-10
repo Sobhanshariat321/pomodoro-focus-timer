@@ -83,35 +83,45 @@ body {
   pointer-events: none;
 }
 
-/* Fallback deep base behind photo */
+/* Illustrated cinematic environment — clean, no baked UI (SOBA-30 critical fix) */
 .env-l0 {
   z-index: 0;
-  background: linear-gradient(180deg, #0d0a06 0%, #1a110a 55%, #0b0704 100%);
+  background:
+    radial-gradient(60% 38% at 50% 6%, rgba(78, 113, 128, 0.14), transparent 70%),
+    radial-gradient(42% 28% at 84% 88%, rgba(214, 120, 60, 0.12), transparent 65%),
+    linear-gradient(180deg, #171008 0%, #241708 52%, #120d08 100%);
 }
 
-/* Photographic cinematic hero — the primary visual redesign */
-.env-photo {
+.env-l1 {
   z-index: 1;
-  background-color: #0d0a06;
-  background-image: image-set(
-    url("/assets/hero-library.webp") type("image/webp"),
-    url("/assets/hero-library.jpg") type("image/jpeg"),
-    url("/hero-cinematic.webp") type("image/webp"),
-    url("/hero-cinematic.jpg") type("image/jpeg")
-  );
-  /* webkit fallback if image-set not supported */
-  background-image: url("/assets/hero-library.jpg");
-  background-size: cover;
-  background-position: center 38%;
-  background-repeat: no-repeat;
-  filter: saturate(1.02) contrast(1.04) brightness(0.96);
+  width: 100%;
+  height: 100%;
+  opacity: 0.52;
+  filter: blur(60px);
 }
 
-/* WebP preferred when supported via extra rule */
-@supports (background-image: url("/assets/hero-library.webp")) {
-  .env-photo {
-    background-image: url("/assets/hero-library.webp"), url("/assets/hero-library.jpg"), url("/hero-cinematic.webp"), url("/hero-cinematic.jpg");
-  }
+.arch-breathe {
+  animation: glow-breathe 10s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.arch-breathe-late {
+  animation-delay: -5s;
+}
+
+@keyframes glow-breathe {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.88; }
+}
+
+/* Photographic cinematic hero — REMOVED to fix baked-UI duplication (SOBA-30 reopen).
+   Previous hero-cinematic / hero-library assets contained the reference mockup UI (24:59, Focus pill, Start, etc.)
+   baked into the JPEG, creating duplicated logo/timer/controls. Replaced with clean illustrated environment below.
+   The div remains in DOM for backward compat but is visually hidden. */
+.env-photo {
+  display: none !important;
+  background: none !important;
 }
 
 .env-l2 {
@@ -903,18 +913,7 @@ body {
   color: var(--amber);
 }
 
-/* Photo responsive — keep fireplace & window visible on crop */
-@media (max-width: 767px) {
-  .env-photo {
-    background-position: 58% 36%;
-  }
-}
-
-@media (min-width: 1600px) {
-  .env-photo {
-    background-position: center 32%;
-  }
-}
+/* Clean illustrated environment needs no positional overrides — photographic removed */
 
 /* ============ Focus visibility ============ */
 
