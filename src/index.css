@@ -83,38 +83,34 @@ body {
   pointer-events: none;
 }
 
+/* Fallback deep base behind photo */
 .env-l0 {
   z-index: 0;
-  background:
-    radial-gradient(60% 38% at 50% 6%, rgba(78, 113, 128, 0.14), transparent 70%),
-    linear-gradient(180deg, #171008 0%, #241708 52%, #120d08 100%);
+  background: linear-gradient(180deg, #0d0a06 0%, #1a110a 55%, #0b0704 100%);
 }
 
-.env-l1 {
+/* Photographic cinematic hero — the primary visual redesign */
+.env-photo {
   z-index: 1;
-  width: 100%;
-  height: 100%;
-  opacity: 0.5;
-  filter: blur(60px);
+  background-color: #0d0a06;
+  background-image: image-set(
+    url("/assets/hero-library.webp") type("image/webp"),
+    url("/assets/hero-library.jpg") type("image/jpeg"),
+    url("/hero-cinematic.webp") type("image/webp"),
+    url("/hero-cinematic.jpg") type("image/jpeg")
+  );
+  /* webkit fallback if image-set not supported */
+  background-image: url("/assets/hero-library.jpg");
+  background-size: cover;
+  background-position: center 38%;
+  background-repeat: no-repeat;
+  filter: saturate(1.02) contrast(1.04) brightness(0.96);
 }
 
-.arch-breathe {
-  animation: glow-breathe 10s ease-in-out infinite;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.arch-breathe-late {
-  animation-delay: -5s;
-}
-
-@keyframes glow-breathe {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.88;
+/* WebP preferred when supported via extra rule */
+@supports (background-image: url("/assets/hero-library.webp")) {
+  .env-photo {
+    background-image: url("/assets/hero-library.webp"), url("/assets/hero-library.jpg"), url("/hero-cinematic.webp"), url("/hero-cinematic.jpg");
   }
 }
 
@@ -127,31 +123,32 @@ body {
   inset: 0;
   width: 100%;
   height: 100%;
-  opacity: 0.06;
+  opacity: 0.05;
   mix-blend-mode: overlay;
 }
 
 .mote {
   position: absolute;
   border-radius: 999px;
-  background: rgba(255, 220, 170, 0.25);
+  background: rgba(255, 220, 170, 0.22);
   animation-name: mote-drift;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   animation-direction: alternate;
+  filter: blur(0.3px);
 }
 
 @keyframes mote-drift {
   from {
     transform: translate3d(0, 0, 0);
-    opacity: 0.15;
+    opacity: 0.12;
   }
   50% {
-    opacity: 0.5;
+    opacity: 0.42;
   }
   to {
     transform: translate3d(var(--drift, 40px), calc(var(--drift, 40px) * -0.7), 0);
-    opacity: 0.2;
+    opacity: 0.18;
   }
 }
 
@@ -159,28 +156,28 @@ body {
   z-index: 3;
 }
 
+/* Readability overlays — tuned to preserve photographic beauty */
 .scrim {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(10, 7, 4, 0.55) 0%,
-    rgba(10, 7, 4, 0.35) 35%,
-    rgba(10, 7, 4, 0.55) 100%
-  );
+  background:
+    linear-gradient(180deg, rgba(8, 5, 3, 0.58) 0%, rgba(8, 5, 3, 0.22) 28%, rgba(8, 5, 3, 0.18) 52%, rgba(8, 5, 3, 0.52) 100%),
+    linear-gradient(90deg, rgba(8, 5, 3, 0.42) 0%, transparent 22%, transparent 78%, rgba(8, 5, 3, 0.38) 100%);
 }
 
 .spotlight {
   position: absolute;
   inset: 0;
-  background: radial-gradient(46% 34% at 50% 46%, rgba(0, 0, 0, 0.35), transparent 70%);
-  filter: blur(10px);
+  background: radial-gradient(48% 42% at 50% 48%, rgba(0, 0, 0, 0.28) 0%, transparent 68%);
+  filter: blur(8px);
 }
 
 .vignette {
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 90% at 50% 110%, rgba(0, 0, 0, 0.5), transparent 60%);
+  background:
+    radial-gradient(110% 92% at 50% 50%, transparent 58%, rgba(0, 0, 0, 0.38) 100%),
+    radial-gradient(90% 75% at 50% 108%, rgba(0, 0, 0, 0.45), transparent 62%);
 }
 
 .phase-tint {
@@ -193,12 +190,12 @@ body {
 
 .stage[data-phase="short-break"] .phase-tint {
   opacity: 1;
-  background: rgba(84, 111, 91, 0.12);
+  background: rgba(84, 111, 91, 0.1);
 }
 
 .stage[data-phase="long-break"] .phase-tint {
   opacity: 1;
-  background: rgba(78, 113, 128, 0.14);
+  background: rgba(78, 113, 128, 0.11);
 }
 
 /* ============ Top bar ============ */
@@ -211,8 +208,10 @@ body {
   align-items: center;
   gap: 16px;
   min-height: 72px;
-  padding: 20px 28px;
+  padding: 18px 28px 20px;
   padding-left: 96px;
+  border-bottom: 1px solid rgba(255, 235, 200, 0.06);
+  background: linear-gradient(180deg, rgba(8, 5, 3, 0.32), transparent);
 }
 
 .brand {
@@ -350,13 +349,13 @@ body {
   z-index: 10;
   flex: 1;
   width: 100%;
-  max-width: 880px;
+  max-width: 820px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 8px 24px 96px;
+  padding: 18px 24px 48px;
   padding-left: 96px;
   text-align: center;
 }
@@ -366,11 +365,12 @@ body {
   gap: 2px;
   padding: 4px;
   border-radius: 999px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  margin-bottom: 24px;
+  background: rgba(18, 13, 8, 0.48);
+  border: 1px solid rgba(255, 235, 200, 0.1);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  margin-bottom: 28px;
 }
 
 .phase-seg {
@@ -379,10 +379,10 @@ body {
   background: transparent;
   color: var(--text-secondary);
   font-family: var(--sans);
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
-  padding: 8px 20px;
-  min-height: 44px;
+  padding: 9px 22px;
+  min-height: 40px;
   cursor: default;
   transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -406,17 +406,18 @@ body {
 .hero-timer {
   font-family: var(--serif);
   font-weight: 400;
-  font-size: clamp(120px, 18vw, 220px);
+  font-size: clamp(96px, 13.5vw, 168px);
   line-height: 1;
   letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
   color: #faf3e6;
   text-shadow:
     0 2px 30px rgba(0, 0, 0, 0.5),
-    0 0 80px rgba(232, 178, 106, 0.18);
-  margin: 0 0 32px;
+    0 0 68px rgba(232, 178, 106, 0.16),
+    0 1px 0 rgba(0, 0, 0, 0.35);
+  margin: 0 0 28px;
   outline: none;
-  animation: phase-crossfade 0.4s ease;
+  animation: phase-crossfade 0.38s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes phase-crossfade {
@@ -434,23 +435,23 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 14px;
   margin-bottom: 10px;
 }
 
 .btn-primary-pill {
-  min-height: 56px;
-  padding: 0 56px;
+  min-height: 52px;
+  padding: 0 48px;
   border-radius: 999px;
-  border: 1px solid rgba(42, 28, 12, 0.4);
+  border: 1px solid rgba(42, 28, 12, 0.38);
   background: var(--amber-gradient);
   color: var(--amber-ink);
   font-family: var(--sans);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 8px 32px rgba(217, 152, 74, 0.4);
-  transition: transform 0.12s ease, filter 0.12s ease;
+  box-shadow: 0 8px 28px rgba(217, 152, 74, 0.38), 0 2px 8px rgba(0, 0, 0, 0.28);
+  transition: transform 0.12s ease, filter 0.12s ease, box-shadow 0.12s ease;
 }
 
 .stage[data-phase="short-break"] .btn-primary-pill {
@@ -472,20 +473,20 @@ body {
 
 .btn-primary-label {
   display: inline-block;
-  min-width: 22ch;
+  min-width: 18ch;
   text-align: center;
 }
 
 .btn-ghost-circle {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   flex: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
   background: rgba(255, 235, 200, 0.06);
-  border: 1px solid rgba(255, 235, 200, 0.16);
+  border: 1px solid rgba(255, 235, 200, 0.14);
   color: #d8c9ac;
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease;
@@ -508,15 +509,16 @@ body {
 }
 
 .progress-wrap {
-  width: min(420px, 100%);
-  margin-bottom: 16px;
+  width: min(380px, 90%);
+  margin-bottom: 14px;
 }
 
 .progress-track {
-  height: 2px;
+  height: 3px;
   border-radius: 999px;
-  background: rgba(255, 235, 200, 0.16);
+  background: rgba(255, 235, 200, 0.12);
   overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .progress-fill {
@@ -560,26 +562,27 @@ body {
 
 .session-strip {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
 }
 
 .session-pill {
   display: inline-flex;
   align-items: center;
-  min-height: 32px;
-  padding: 4px 16px;
+  min-height: 28px;
+  padding: 4px 14px;
   border-radius: 999px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  font-size: 12.5px;
+  background: rgba(18, 13, 8, 0.42);
+  border: 1px solid rgba(255, 235, 200, 0.08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  font-size: 12px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
-  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  color: rgba(232, 214, 180, 0.82);
 }
 
 .session-condensed {
@@ -591,6 +594,26 @@ body {
   font-size: 13px;
   color: var(--text-muted);
   max-width: 60ch;
+}
+
+.hero-tagline {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 28px 0 0;
+  font-family: var(--serif);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(232, 214, 180, 0.55);
+}
+
+.hero-tagline-rule {
+  width: 36px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 235, 200, 0.22), transparent);
+  flex: none;
 }
 
 /* ============ Rail ============ */
@@ -880,6 +903,19 @@ body {
   color: var(--amber);
 }
 
+/* Photo responsive — keep fireplace & window visible on crop */
+@media (max-width: 767px) {
+  .env-photo {
+    background-position: 58% 36%;
+  }
+}
+
+@media (min-width: 1600px) {
+  .env-photo {
+    background-position: center 32%;
+  }
+}
+
 /* ============ Focus visibility ============ */
 
 :focus-visible {
@@ -912,7 +948,7 @@ body {
     display: none;
   }
   .hero-timer {
-    font-size: clamp(96px, 16vw, 150px);
+    font-size: clamp(88px, 15vw, 136px);
   }
   .quote {
     max-width: 180px;
@@ -951,8 +987,11 @@ body {
     padding-top: 6vh;
   }
   .hero-timer {
-    font-size: clamp(84px, 24vw, 120px);
-    margin-bottom: 24px;
+    font-size: clamp(74px, 21vw, 104px);
+    margin-bottom: 22px;
+  }
+  .hero-tagline {
+    display: none;
   }
   .phase-seg {
     padding: 8px 14px;
